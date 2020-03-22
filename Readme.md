@@ -110,10 +110,19 @@
       
       只需要在接口使用注解  ` @LugooConsumer` 
       
+      > 注解有三个参数 ， 负责均衡策略 `loadbalance=""`  回退方法 `fallback=""` i 以及请求超时时间 requestTimeOut = `4` (默认5秒)
+      
+      其中负载均衡目前只能选择默认的随机，后期可以增加 时间hash, 请求ID- hash等
+      
+      回退的方法必须要和当前service在同一个方法内，且要为public方法
+      
+      
+      
+      
        ```java
           @Service
           public class AkkaService {
-              @LugooConsumer
+              @LugooConsumer(fallback = "getRankFallback" ,requestTimeOut = 4)
               IUserInfo iUserInfo;
           
               public String  testRpc(int i) {
