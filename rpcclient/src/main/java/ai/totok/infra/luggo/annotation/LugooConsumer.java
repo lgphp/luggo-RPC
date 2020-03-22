@@ -14,5 +14,15 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Inherited
 public @interface LugooConsumer {
-    String servicename() default "";
+
+    // 负载均衡的实现类
+    String loadbalance() default "RandomBalance";
+
+    // 如果出错回退的方法
+    String fallback() default "";
+
+    // 请求超时时间 秒为单位
+    int requestTimeOut() default 5;
+
 }
+

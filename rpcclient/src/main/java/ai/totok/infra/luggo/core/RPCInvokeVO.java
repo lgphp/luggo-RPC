@@ -55,4 +55,6 @@ public class RPCInvokeVO  implements Serializable {
     public void setArgs(Object[] args) {
         this.args = args;
     }
+
+
 }

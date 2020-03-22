@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @date 2020-03-15 10:52
  * @description
  */
-public class RPCInvokeVO  implements Serializable {
+public class RPCInvokeVO implements Serializable {
 
     private static final long serialVersionUID = -8540474686290164480L;
     private String requestId;
@@ -15,6 +15,7 @@ public class RPCInvokeVO  implements Serializable {
     private String methodName;
     private Class<?>[] paramTypes;
     private Object[]  args;
+
 
     public String getRequestId() {
         return requestId;
