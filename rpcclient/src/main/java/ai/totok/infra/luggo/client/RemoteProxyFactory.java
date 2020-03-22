@@ -31,7 +31,7 @@ public class RemoteProxyFactory {
     public static Object createService(ILoadBalance loadBalance, Class serviceInterface, Object serviceBean, String fallbackMethod, int requestTimeout) {
 
         Object serviceImpl = Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, (o, method, args) -> {
-            ActorRef router = loadBalance.getRouterChannel(serviceInterface.getSimpleName(), RouterChannel.routerChannel);
+            ActorRef router = loadBalance.getRouterChannel(serviceInterface.getCanonicalName(), RouterChannel.routerChannel);
             RPCInvokeVO rpcInvokeVO = new RPCInvokeVO();
             String requestId = UUID.randomUUID().toString();
             rpcInvokeVO.setRequestId(requestId);
@@ -50,6 +50,7 @@ public class RemoteProxyFactory {
                 }
                 return retObj;
             } catch (TimeoutException te) {
+                log.info("ex:{}", te.getClass());
                 return doFallback(serviceBean, fallbackMethod);
             } catch (Exception e) {
                 log.error(e.getClass().getName());

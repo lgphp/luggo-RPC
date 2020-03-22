@@ -2,7 +2,9 @@ package ai.totok.infra.luggo.client;
 
 import ai.totok.infra.luggo.annotation.LugooConsumer;
 import ai.totok.infra.luggo.core.loadbalance.ILoadBalance;
+import akka.actor.ActorRef;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -69,7 +73,7 @@ public class ServiceConsumer {
                                     ILoadBalance loadBalance = (ILoadBalance) lbCls.newInstance();
                                     // 创建路由Channel
                                     synchronized (interFaceCls) {
-                                        RouterChannel.createRouter(srvAddr, port, actorNum, interFaceCls.getSimpleName());
+                                        RouterChannel.createRouter(srvAddr, port, actorNum, interFaceCls.getCanonicalName());
                                     }
                                     Object service = RemoteProxyFactory.createService(loadBalance, interFaceCls, ctx.getBean(clsName), fallbackMethod, requestTimeout);
                                     f.set(ctx.getBean(clsName), service);
@@ -103,6 +107,11 @@ public class ServiceConsumer {
                         serviceInfo = JSONObject.parseObject(new String(data));
                         doConsumer(serviceInfo);
                         break;
+                    case CHILD_REMOVED:
+                        // 如果有服务下线，则删除路由
+                        path = event.getData().getPath();
+                        removeServiceOfRouter(path);
+                        break;
                     default:
                         break;
                 }
@@ -111,5 +120,28 @@ public class ServiceConsumer {
             log.error("can not connect zookeeper:{}", e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 移除服务
+     *
+     * @param path
+     */
+    private void removeServiceOfRouter(String path) {
+        String removeName = path.split(":")[2];
+        String removePath = path.split("/")[2];
+        // 获取这个业务下的所有路由
+        List<Map<String, ActorRef>> routerMaps = RouterChannel.routerChannel.get(removeName);
+        List<Map<String, ActorRef>> newListRoute = Lists.<Map<String, ActorRef>>newArrayList();
+        // 移除该业务的router
+        synchronized (this) {
+            for (Map m : routerMaps) {
+                if (Objects.isNull(m.get(removePath))) {
+                    newListRoute.add(m);
+                }
+            }
+            RouterChannel.routerChannel.replaceValues(removeName, newListRoute);
+        }
+
     }
 }
