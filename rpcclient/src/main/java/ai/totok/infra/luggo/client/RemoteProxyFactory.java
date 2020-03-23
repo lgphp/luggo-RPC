@@ -65,6 +65,7 @@ public class RemoteProxyFactory {
     private static Object doFallback(Object serviceBean, String fallbackMethod) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (StringUtils.isNotEmpty(fallbackMethod)) {
             Method fallInvoke = serviceBean.getClass().getMethod(fallbackMethod);
+            fallInvoke.setAccessible(true);
             return fallInvoke.invoke(serviceBean);
         }
         throw new InternalError("服务异常");

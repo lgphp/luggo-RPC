@@ -102,9 +102,8 @@
                 port: 2012   # 消费端监听端口
               register:
                 addr: 47.91.111.137:12185   #zookeeper服务地址
-                group: admin   # 服务群组
-    
-            ```
+                group: admin   # 服务群组    
+         ```
         
       - 服务消费
       
@@ -114,7 +113,7 @@
       
       其中负载均衡目前只能选择默认的随机，后期可以增加 时间hash, 请求ID- hash等
       
-      回退的方法必须要和当前service在同一个方法内，且要为public方法
+      回退的方法必须要和当前service在同一个方法内，不支持带参数。
       
       
       
@@ -122,11 +121,14 @@
        ```java
           @Service
           public class AkkaService {
-              @LugooConsumer(fallback = "getRankFallback" ,requestTimeOut = 4)
+              @LugooConsumer(fallback = "testRpcFallback" ,requestTimeOut = 4)
               IUserInfo iUserInfo;
           
               public String  testRpc(int i) {
                   return iUserInfo.getToken(String.valueOf(i));
+              }
+              private String testRpcFallback(){
+                return "fallback";
               }
           }
         ```
