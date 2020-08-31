@@ -77,6 +77,17 @@
 
       ```
       
+    -  ProviderApplication 启动
+     
+          需要加入ComponentScan
+          
+             ```java
+            @SpringBootApplication
+            @ComponentScan("ai.totok.*")
+            public class AkkaRpcHttp {}
+            ```
+    
+       
       
    - Consumer
    
@@ -104,6 +115,16 @@
                 addr: 47.91.111.137:12185   #zookeeper服务地址
                 group: admin   # 服务群组    
          ```
+        
+          -  ConsumerApplication 启动
+           
+                需要加入ComponentScan
+                
+                   ```java
+                  @SpringBootApplication
+                  @ComponentScan("ai.totok.**")
+                  public class AkkaRpcProviderApp {}
+                  ```  
         
       - 服务消费
       

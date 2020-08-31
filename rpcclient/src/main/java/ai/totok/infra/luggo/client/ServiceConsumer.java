@@ -101,7 +101,7 @@ public class ServiceConsumer {
                 byte[] data;
                 JSONObject serviceInfo;
                 switch (event.getType()) {
-                    case CHILD_ADDED:
+                    case CHILD_ADDED: //  服务上线
                         path = event.getData().getPath();
                         data = client.getData().forPath(path);
                         serviceInfo = JSONObject.parseObject(new String(data));

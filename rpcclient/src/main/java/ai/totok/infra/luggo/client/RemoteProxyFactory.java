@@ -30,7 +30,7 @@ public class RemoteProxyFactory {
 
     public static Object createService(ILoadBalance loadBalance, Class serviceInterface, Object serviceBean, String fallbackMethod, int requestTimeout) {
 
-        Object serviceImpl = Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, (o, method, args) -> {
+        Object serviceImpl = Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, (proxy, method, args) -> {
             ActorRef router = loadBalance.getRouterChannel(serviceInterface.getCanonicalName(), RouterChannel.routerChannel);
             RPCInvokeVO rpcInvokeVO = new RPCInvokeVO();
             String requestId = UUID.randomUUID().toString();
