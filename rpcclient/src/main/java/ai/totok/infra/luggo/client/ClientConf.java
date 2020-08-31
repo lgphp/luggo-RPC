@@ -54,6 +54,7 @@ public class ClientConf {
         Map<String, Object> m = new HashMap<>();
         m.put("akka.actor.provider" , "cluster");
         m.put("akka.actor.allow-java-serialization" , "on");
+        m.put("akka.actor.warn-about-java-serializer-usage", "off");
         m.put("akka.remote.artery.transport" , "tcp");
         m.put("akka.remote.artery.canonical.port" ,  this.clientPort);
         m.put("akka.remote.artery.canonical.hostname" ,  this.clientAddr);

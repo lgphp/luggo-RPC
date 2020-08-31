@@ -30,7 +30,8 @@ public class RemoteProxyFactory {
 
     public static Object createService(ILoadBalance loadBalance, Class serviceInterface, Object serviceBean, String fallbackMethod, int requestTimeout) {
 
-        Object serviceImpl = Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, (proxy, method, args) -> {
+        return Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, (proxy, method, args) -> {
+            long st = System.currentTimeMillis();
             ActorRef router = loadBalance.getRouterChannel(serviceInterface.getCanonicalName(), RouterChannel.routerChannel);
             RPCInvokeVO rpcInvokeVO = new RPCInvokeVO();
             String requestId = UUID.randomUUID().toString();
@@ -40,7 +41,6 @@ public class RemoteProxyFactory {
             rpcInvokeVO.setParamTypes(method.getParameterTypes());
             rpcInvokeVO.setArgs(args);
             Future<Object> future = Patterns.ask(router, rpcInvokeVO, new Timeout(Duration.create(requestTimeout, TimeUnit.SECONDS)));
-            log.info("send:[request_id:{}]  router:{}", requestId, router);
             try {
                 Object result = Await.result(future, Duration.create(requestTimeout, TimeUnit.SECONDS));
                 Object retObj = ((RPCReponseVO) result).getRetObj();
@@ -48,17 +48,17 @@ public class RemoteProxyFactory {
                     // fallback 逻辑
                     return doFallback(serviceBean, fallbackMethod);
                 }
+                log.info("[requestId:{}]  router:[{}]  cost:[{} ms]", requestId, router, System.currentTimeMillis() - st);
                 return retObj;
             } catch (TimeoutException te) {
-                log.info("ex:{}", te.getClass());
-                return doFallback(serviceBean, fallbackMethod);
+                log.warn("invoke remote method timeout [requestId:{}]", requestId);
+                te.printStackTrace();
             } catch (Exception e) {
-                log.error(e.getClass().getName());
-                // 其他错误，直接将异常传给业务端
-                return e;
+                log.error("invoke remote method error: [requestId:{}] ", requestId);
+                e.printStackTrace();
             }
+            return null;
         });
-        return serviceImpl;
     }
 
 
