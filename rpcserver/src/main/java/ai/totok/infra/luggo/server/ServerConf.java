@@ -3,6 +3,8 @@ package ai.totok.infra.luggo.server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +46,8 @@ public class ServerConf {
     public String getAddr() {
         return addr;
     }
-    @Value("${luggo.server.addr:127.0.0.1}")
+
+    @Value("${luggo.server.addr:0.0.0.0}")
     public void setAddr(String addr) {
         this.addr = addr;
     }
@@ -66,14 +69,18 @@ public class ServerConf {
         this.actorNum = actorNum;
     }
 
-    public Map<String,? extends Object> getMapConf(){
+    public Map<String, ? extends Object> getMapConf() {
         Map<String, Object> m = new HashMap<>();
         m.put("akka.actor.provider" , "cluster");
         m.put("akka.actor.allow-java-serialization" , "on");
         m.put("akka.actor.warn-about-java-serializer-usage", "off");
         m.put("akka.remote.artery.transport" , "tcp");
         m.put("akka.remote.artery.canonical.port" , this.port);
-        m.put("akka.remote.artery.canonical.hostname" , this.addr);
+        try {
+            m.put("akka.remote.artery.canonical.hostname", m.put("akka.remote.artery.canonical.hostname", "0.0.0.0".equals(this.addr) ? InetAddress.getLocalHost().getHostAddress() : this.addr));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         return m;
     }
 }

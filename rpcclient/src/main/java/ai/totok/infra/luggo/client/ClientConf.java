@@ -3,6 +3,8 @@ package ai.totok.infra.luggo.client;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,9 +41,8 @@ public class ClientConf {
     }
 
 
-    @Value("${luggo.client.addr:127.0.0.1}")
-    public void setClientAddr(String clientAddr) {
-        this.clientAddr = clientAddr;
+    public static void main(String[] args) throws Exception {
+        System.out.println("InetAddress.getLocalHost().getHostAddress() = " + InetAddress.getLocalHost().getHostAddress());
     }
     
 
@@ -50,14 +51,23 @@ public class ClientConf {
         this.clientPort = clientPort;
     }
 
-    public    Map<String,? extends Object> getMapConf(){
+    @Value("${luggo.client.addr:0.0.0.0}")
+    public void setClientAddr(String clientAddr) {
+        this.clientAddr = clientAddr;
+    }
+
+    public Map<String, ? extends Object> getMapConf() {
         Map<String, Object> m = new HashMap<>();
         m.put("akka.actor.provider" , "cluster");
         m.put("akka.actor.allow-java-serialization" , "on");
         m.put("akka.actor.warn-about-java-serializer-usage", "off");
         m.put("akka.remote.artery.transport" , "tcp");
         m.put("akka.remote.artery.canonical.port" ,  this.clientPort);
-        m.put("akka.remote.artery.canonical.hostname" ,  this.clientAddr);
+        try {
+            m.put("akka.remote.artery.canonical.hostname", "0.0.0.0".equals(this.clientAddr) ? InetAddress.getLocalHost().getHostAddress() : this.clientAddr);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         return m;
     }
 }
