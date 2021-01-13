@@ -64,10 +64,20 @@ public class ClientConf {
         m.put("akka.remote.artery.transport" , "tcp");
         m.put("akka.remote.artery.canonical.port" ,  this.clientPort);
         try {
-            m.put("akka.remote.artery.canonical.hostname", "0.0.0.0".equals(this.clientAddr) ? InetAddress.getLocalHost().getHostAddress() : this.clientAddr);
+            m.put("akka.remote.artery.canonical.hostname", InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         return m;
+    }
+
+
+    public String getLocalAddr() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "0.0.0.0";
     }
 }

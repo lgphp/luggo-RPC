@@ -81,7 +81,7 @@ public final  class RpcServer {
              * 服务的地址为 k: {"addr": "ip:port", "srvname" : serviceClassName  n:actornum}
              */
             JSONObject serviceInfo = new JSONObject().fluentPut("srvaddr", serverConf.getLocalAddr()).fluentPut("port", serverConf.getPort()).fluentPut("srvname", serviceClassName).fluentPut("actnum", serverConf.getActorNum());
-            String servicePath = String.format("%s:%s:%s" , serverConf.getAddr() , serverConf.getPort() , serviceClassName);
+            String servicePath = String.format("%s:%s:%s", serverConf.getLocalAddr(), serverConf.getPort(), serviceClassName);
             ServiceRegister.serviceRegister.put(serviceClassName, serviceImpl);
             registrrClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/service/" + servicePath, JSONObject.toJSONBytes(serviceInfo));
             log.info("[{}] 注册成功", servicePath);

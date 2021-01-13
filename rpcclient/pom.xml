@@ -30,33 +30,37 @@
         <artifactId>curator-recipes</artifactId>
         <version>4.2.0</version>
     </dependency>
+        <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-actor -->
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_2.13</artifactId>
+            <version>2.6.10</version>
+        </dependency>
 
-    <dependency>
-        <groupId>com.typesafe.akka</groupId>
-        <artifactId>akka-actor_2.13</artifactId>
-        <version>2.6.0-M5</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-remote -->
-    <dependency>
-        <groupId>com.typesafe.akka</groupId>
-        <artifactId>akka-remote_2.13</artifactId>
-        <version>2.6.0-M5</version>
-    </dependency>
-    <dependency>
-        <groupId>io.aeron</groupId>
-        <artifactId>aeron-driver</artifactId>
-        <version>1.26.0</version>
-    </dependency>
-    <dependency>
-        <groupId>io.aeron</groupId>
-        <artifactId>aeron-client</artifactId>
-        <version>1.26.0</version>
-    </dependency>
-    <dependency>
-        <groupId>com.typesafe.akka</groupId>
-        <artifactId>akka-cluster_2.13</artifactId>
-        <version>2.6.0-M5</version>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-remote -->
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-remote_2.13</artifactId>
+            <version>2.6.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.aeron</groupId>
+            <artifactId>aeron-driver</artifactId>
+            <version>1.26.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.aeron</groupId>
+            <artifactId>aeron-client</artifactId>
+            <version>1.26.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-cluster -->
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-cluster_2.13</artifactId>
+            <version>2.6.10</version>
+        </dependency>
+
         <dependency>
             <groupId>ai.totok.base</groupId>
             <artifactId>common-errors</artifactId>
