@@ -77,10 +77,19 @@ public class ServerConf {
         m.put("akka.remote.artery.transport" , "tcp");
         m.put("akka.remote.artery.canonical.port" , this.port);
         try {
-            m.put("akka.remote.artery.canonical.hostname", m.put("akka.remote.artery.canonical.hostname", "0.0.0.0".equals(this.addr) ? InetAddress.getLocalHost().getHostAddress() : this.addr));
+            m.put("akka.remote.artery.canonical.hostname", InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         return m;
+    }
+
+    public String getLocalAddr() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this.getAddr();
     }
 }

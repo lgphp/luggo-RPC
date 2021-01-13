@@ -65,13 +65,12 @@ public final  class RpcServer {
             /**
              * 服务的地址为 k: ip:port/serviceClassName  v
              */
-            String servicePath = String.format("%s:%s/%s" , serverConf.getAddr() , serverConf.getPort() , serviceClassName);
+            String servicePath = String.format("%s:%s/%s", serverConf.getLocalAddr(), serverConf.getPort(), serviceClassName);
             registrrClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/service/" + servicePath , byteArrayOutputStream.toByteArray());
             log.info("[{}] 注册成功", servicePath);
         } catch (  Exception e) {
             log.warn("注册服务失败:{}", serviceClassName, e);
         }
-
     }
 
 
@@ -81,7 +80,7 @@ public final  class RpcServer {
             /**
              * 服务的地址为 k: {"addr": "ip:port", "srvname" : serviceClassName  n:actornum}
              */
-            JSONObject serviceInfo = new JSONObject().fluentPut("srvaddr" , serverConf.getAddr()).fluentPut("port" , serverConf.getPort()).fluentPut("srvname" , serviceClassName ).fluentPut( "actnum" , serverConf.getActorNum());
+            JSONObject serviceInfo = new JSONObject().fluentPut("srvaddr", serverConf.getLocalAddr()).fluentPut("port", serverConf.getPort()).fluentPut("srvname", serviceClassName).fluentPut("actnum", serverConf.getActorNum());
             String servicePath = String.format("%s:%s:%s" , serverConf.getAddr() , serverConf.getPort() , serviceClassName);
             ServiceRegister.serviceRegister.put(serviceClassName, serviceImpl);
             registrrClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/service/" + servicePath, JSONObject.toJSONBytes(serviceInfo));
