@@ -17,6 +17,7 @@ import java.util.Map;
 public class ClientConf {
  
     private  String clientAddr;
+
     private  int clientPort;
 
     private String zkAddress;
@@ -39,7 +40,6 @@ public class ClientConf {
     public String getGroup() {
         return group;
     }
-
 
     public static void main(String[] args) throws Exception {
         System.out.println("InetAddress.getLocalHost().getHostAddress() = " + InetAddress.getLocalHost().getHostAddress());
@@ -74,15 +74,5 @@ public class ClientConf {
         m.put("akka.remote.artery.advanced.maximum-large-frame-size", "4MiB");
         m.put("akka.remote.artery.advanced.large-buffer-pool-size", 32);
         return m;
-    }
-
-
-    public String getLocalAddr() {
-        try {
-            return InetAddress.getLocalHost().getHostAddress();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "0.0.0.0";
     }
 }
