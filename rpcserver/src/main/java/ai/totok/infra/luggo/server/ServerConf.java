@@ -81,6 +81,11 @@ public class ServerConf {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+        m.put("akka.remote.artery.enabled", "on");
+        m.put("akka.remote.artery.advanced.maximum-frame-size", "256KiB");
+        m.put("akka.remote.artery.advanced.buffer-pool-size", 128);
+        m.put("akka.remote.artery.advanced.maximum-large-frame-size", "4MiB");
+        m.put("akka.remote.artery.advanced.large-buffer-pool-size", 32);
         return m;
     }
 
