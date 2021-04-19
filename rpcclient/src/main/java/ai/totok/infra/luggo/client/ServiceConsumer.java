@@ -75,7 +75,7 @@ public class ServiceConsumer {
                                     synchronized (interFaceCls) {
                                         RouterChannel.createRouter(srvAddr, port, actorNum, interFaceCls.getCanonicalName());
                                     }
-                                    Object service = RemoteProxyFactory.createService(loadBalance, interFaceCls, ctx.getBean(clsName), fallbackMethod, requestTimeout);
+                                    Object service = RemoteProxyFactory.(loadBalance, interFaceCls, ctx.getBean(clsName), fallbackMethod, requestTimeout);
                                     f.set(ctx.getBean(clsName), service);
                                 } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
                                     e.printStackTrace();
